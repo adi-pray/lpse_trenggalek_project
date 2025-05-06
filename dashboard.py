@@ -21,16 +21,21 @@ except Exception as e:
     st.error(f"Gagal membuka database: {e}")
     st.stop()
 
-# Tambah kolom tahun (jika mungkin)
-def extract_year(nama):
-    for part in nama.split():
+# Tambahkan kolom tahun dari nama_paket (jika memungkinkan)
+def extract_year(text):
+    for part in text.split():
         if part.isdigit() and len(part) == 4 and part.startswith("20"):
             return int(part)
     return None
 
 df['tahun'] = df['nama_paket'].apply(extract_year)
 
-st.title("📊 Dashboard Tender LPSE Trenggalek")
+# ============================ TAMPILAN DASHBOARD ============================
 
-# === Filter ===
-instansi_list = df['instansi'].dropna().unique().tolist()
+st.title("📊 Dashboard Tender LPSE Trenggalek")
+st.markdown("Menampilkan hasil scraping data tender dari situs LPSE Trenggalek.")
+
+# Tampilkan jumlah data
+st.subheader(f"📄 Total data: {len(df)}")
+
+# Filter (opsional
