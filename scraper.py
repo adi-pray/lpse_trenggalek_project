@@ -11,7 +11,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 DB_PATH = os.path.join(DATA_DIR, "lpse_trenggalek.db")
 
-BASE_URL = 'https://lpse.trenggalekkab.go.id'
+BASE_URL = 'https://lpse.trenggalekkab.go.id/eproc4'
 
 def scrape():
     url = BASE_URL + '/eproc4/lelang'
