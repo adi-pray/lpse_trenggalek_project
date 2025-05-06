@@ -6,8 +6,14 @@ from fpdf import FPDF
 
 st.set_page_config(page_title="Dashboard Tender LPSE Trenggalek", layout="wide")
 
-db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "lpse_trenggalek.db"))
-conn = sqlite3.connect(db_path)
+# Path absolut ke database
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "data", "lpse_trenggalek.db"))
+OUTPUT_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "output"))
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# Load data
+conn = sqlite3.connect(DB_PATH)
 df = pd.read_sql_query("SELECT * FROM tender", conn)
 conn.close()
 
@@ -40,9 +46,10 @@ df = df[df['nilai_kontrak_num'] >= nilai_kontrak_min]
 st.dataframe(df.drop(columns=['nilai_kontrak_num']))
 
 # === Ekspor Excel ===
+excel_path = os.path.join(OUTPUT_DIR, "tender_trenggalek.xlsx")
 if st.button("📥 Download Excel"):
-    df.to_excel("../output/tender_trenggalek.xlsx", index=False)
-    st.success("Excel berhasil dibuat di folder output.")
+    df.to_excel(excel_path, index=False)
+    st.success(f"Excel berhasil dibuat: {excel_path}")
 
 # === Ekspor PDF ===
 def export_to_pdf(dataframe, path):
@@ -57,6 +64,7 @@ def export_to_pdf(dataframe, path):
 
     pdf.output(path)
 
+pdf_path = os.path.join(OUTPUT_DIR, "laporan_tender.pdf")
 if st.button("🧾 Export ke PDF"):
-    export_to_pdf(df, "../output/laporan_tender.pdf")
-    st.success("PDF berhasil dibuat di folder output.")
+    export_to_pdf(df, pdf_path)
+    st.success(f"PDF berhasil dibuat: {pdf_path}")
