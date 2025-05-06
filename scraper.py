@@ -25,39 +25,18 @@ def scrape():
     cursor = conn.cursor()
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS tender (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        kode TEXT,
-        nama_paket TEXT,
-        instansi TEXT,
-        nilai_hps TEXT,
-        jenis_pengadaan TEXT,
-        kode_tender TEXT,
-        pemenang TEXT,
-        npwp TEXT,
-        alamat TEXT,
-        email TEXT,
-        nilai_penawaran TEXT,
-        nilai_kontrak TEXT
-    )
-''')  # ← penutup triple quote di sini
-
-
-    for row in rows:
-        cols = row.find_all('td')
-        if len(cols) >= 4:
-            kode = cols[0].text.strip()
-            nama_paket = cols[1].text.strip()
-            instansi = cols[2].text.strip()
-            nilai_hps = cols[3].text.strip()
-
-            # Placeholder
-            jenis_pengadaan = "Belum Diambil"
-            kode_tender = kode
-            pemenang = npwp = alamat = email = nilai_penawaran = nilai_kontrak = "-"
-
-            cursor.execute('''
-                INSERT INTO tender (
-                    kode, nama_paket, instansi, nilai_hps,
-                    jenis_peng_
-
+        CREATE TABLE IF NOT EXISTS tender (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kode TEXT,
+            nama_paket TEXT,
+            instansi TEXT,
+            nilai_hps TEXT,
+            jenis_pengadaan TEXT,
+            kode_tender TEXT,
+            pemenang TEXT,
+            npwp TEXT,
+            alamat TEXT,
+            email TEXT,
+            nilai_penawaran TEXT,
+            nilai_kontrak TEXT
+        )
