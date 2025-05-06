@@ -25,18 +25,19 @@ def scrape():
     cursor = conn.cursor()
 
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS tender (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            kode TEXT,
-            nama_paket TEXT,
-            instansi TEXT,
-            nilai_hps TEXT,
-            jenis_pengadaan TEXT,
-            kode_tender TEXT,
-            pemenang TEXT,
-            npwp TEXT,
-            alamat TEXT,
-            email TEXT,
-            nilai_penawaran TEXT,
-            nilai_kontrak TEXT
-        )
+    CREATE TABLE IF NOT EXISTS tender (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        kode TEXT,
+        nama_paket TEXT,
+        instansi TEXT,
+        nilai_hps TEXT,
+        jenis_pengadaan TEXT,
+        kode_tender TEXT,
+        pemenang TEXT,
+        npwp TEXT,
+        alamat TEXT,
+        email TEXT,
+        nilai_penawaran TEXT,
+        nilai_kontrak TEXT
+    )
+''')
