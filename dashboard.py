@@ -6,7 +6,7 @@ from fpdf import FPDF
 
 st.set_page_config(page_title="Dashboard Tender LPSE Trenggalek", layout="wide")
 
-db_path = os.path.join("..", "data", "lpse_trenggalek.db")
+db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "lpse_trenggalek.db"))
 conn = sqlite3.connect(db_path)
 df = pd.read_sql_query("SELECT * FROM tender", conn)
 conn.close()
