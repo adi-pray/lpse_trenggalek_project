@@ -1,7 +1,6 @@
+streamlit
+pandas
 requests
 beautifulsoup4
 lxml
-pandas
-streamlit
 fpdf
-openpyxl

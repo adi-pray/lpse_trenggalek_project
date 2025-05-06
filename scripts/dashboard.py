@@ -6,65 +6,62 @@ from fpdf import FPDF
 
 st.set_page_config(page_title="Dashboard Tender LPSE Trenggalek", layout="wide")
 
-# Path absolut ke database
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "data", "lpse_trenggalek.db"))
 OUTPUT_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "output"))
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Load data
-conn = sqlite3.connect(DB_PATH)
-df = pd.read_sql_query("SELECT * FROM tender", conn)
-conn.close()
+try:
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query("SELECT * FROM tender", conn)
+    conn.close()
+except Exception as e:
+    st.error(f"Gagal membuka database: {e}")
+    st.stop()
 
-st.title("📊 Dashboard Tender LPSE Trenggalek")
-
-# Tambah kolom tahun dari nama_paket
-def extract_year(nama):
-    for part in nama.split():
+def extract_year(text):
+    for part in text.split():
         if part.isdigit() and len(part) == 4 and part.startswith("20"):
             return int(part)
     return None
 
 df['tahun'] = df['nama_paket'].apply(extract_year)
 
-# === Filter ===
+st.title("📊 Dashboard Tender LPSE Trenggalek")
+st.markdown("Menampilkan hasil scraping data tender dari situs LPSE Trenggalek.")
+
+st.subheader(f"📄 Total data: {len(df)}")
+
 instansi_list = df['instansi'].dropna().unique().tolist()
-selected_instansi = st.multiselect("Filter berdasarkan instansi:", instansi_list)
+selected_instansi = st.multiselect("Filter berdasarkan Instansi:", instansi_list)
 if selected_instansi:
     df = df[df['instansi'].isin(selected_instansi)]
 
-available_years = sorted(df['tahun'].dropna().unique().astype(int))
-selected_years = st.multiselect("Filter berdasarkan tahun:", available_years)
-if selected_years:
-    df = df[df['tahun'].isin(selected_years)]
+year_list = sorted(df['tahun'].dropna().unique())
+selected_year = st.multiselect("Filter berdasarkan Tahun:", year_list)
+if selected_year:
+    df = df[df['tahun'].isin(selected_year)]
 
-nilai_kontrak_min = st.number_input("Nilai kontrak minimal", min_value=0, value=0)
-df['nilai_kontrak_num'] = df['nilai_kontrak'].replace('-', '0').str.replace('.', '', regex=False).str.replace(',', '', regex=False).astype(float)
-df = df[df['nilai_kontrak_num'] >= nilai_kontrak_min]
+st.dataframe(df)
 
-st.dataframe(df.drop(columns=['nilai_kontrak_num']))
-
-# === Ekspor Excel ===
 excel_path = os.path.join(OUTPUT_DIR, "tender_trenggalek.xlsx")
-if st.button("📥 Download Excel"):
+if st.button("📥 Ekspor ke Excel"):
     df.to_excel(excel_path, index=False)
-    st.success(f"Excel berhasil dibuat: {excel_path}")
+    st.success(f"File Excel berhasil dibuat di: {excel_path}")
 
-# === Ekspor PDF ===
 def export_to_pdf(dataframe, path):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=10)
     pdf.add_page()
     pdf.set_font("Arial", size=10)
 
-    for index, row in dataframe.iterrows():
-        line = f"{row['kode']} | {row['nama_paket']} | {row['instansi']} | {row['nilai_kontrak']}"
-        pdf.cell(0, 10, line, ln=True)
+    for idx, row in dataframe.iterrows():
+        baris = f"{row['kode']} | {row['nama_paket']} | {row['instansi']} | {row['nilai_kontrak']}"
+        pdf.cell(0, 10, baris, ln=True)
 
     pdf.output(path)
 
 pdf_path = os.path.join(OUTPUT_DIR, "laporan_tender.pdf")
-if st.button("🧾 Export ke PDF"):
+if st.button("🧾 Ekspor ke PDF"):
     export_to_pdf(df, pdf_path)
-    st.success(f"PDF berhasil dibuat: {pdf_path}")
+    st.success(f"File PDF berhasil dibuat di: {pdf_path}")
