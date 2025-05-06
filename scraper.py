@@ -24,7 +24,7 @@ def scrape():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute('''
+cursor.execute('''
     CREATE TABLE IF NOT EXISTS tender (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         kode TEXT,
