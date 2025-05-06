@@ -44,6 +44,10 @@ if selected_year:
 
 st.dataframe(df)
 
+st.subheader("📌 Ringkasan Tender Otomatis")
+for index, row in df.iterrows():
+    st.markdown(f"- {row['ringkasan_ai']}")
+
 excel_path = os.path.join(OUTPUT_DIR, "tender_trenggalek.xlsx")
 if st.button("📥 Ekspor ke Excel"):
     df.to_excel(excel_path, index=False)
