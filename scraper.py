@@ -2,6 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 import sqlite3
 import time
+import os
+
+# Pastikan folder data/ tersedia
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "data"))
+os.makedirs(DATA_DIR, exist_ok=True)
+
+DB_PATH = os.path.join(DATA_DIR, "lpse_trenggalek.db")
 
 BASE_URL = 'https://lpse.trenggalekkab.go.id'
 
@@ -13,7 +21,7 @@ def scrape():
 
     rows = soup.select('table.table tbody tr')
 
-    conn = sqlite3.connect('../data/lpse_trenggalek.db')
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -42,6 +50,7 @@ def scrape():
             instansi = cols[2].text.strip()
             nilai_hps = cols[3].text.strip()
 
+            # Placeholder
             jenis_pengadaan = "Belum Diambil"
             kode_tender = kode
             pemenang = npwp = alamat = email = nilai_penawaran = nilai_kontrak = "-"
@@ -49,18 +58,5 @@ def scrape():
             cursor.execute('''
                 INSERT INTO tender (
                     kode, nama_paket, instansi, nilai_hps,
-                    jenis_pengadaan, kode_tender, pemenang, npwp,
-                    alamat, email, nilai_penawaran, nilai_kontrak
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                kode, nama_paket, instansi, nilai_hps,
-                jenis_pengadaan, kode_tender, pemenang, npwp,
-                alamat, email, nilai_penawaran, nilai_kontrak
-            ))
-            conn.commit()
-            time.sleep(0.5)
+                    jenis_peng_
 
-    conn.close()
-
-if __name__ == "__main__":
-    scrape()
