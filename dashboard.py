@@ -33,4 +33,4 @@ df['tahun'] = df['nama_paket'].apply(extract_year)
 st.title("📊 Dashboard Tender LPSE Trenggalek")
 
 # === Filter ===
-instansi_list = df['inst]()_
+instansi_list = df['instansi'].dropna().unique().tolist()
